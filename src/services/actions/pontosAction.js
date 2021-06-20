@@ -1,7 +1,6 @@
 import db from '../ConnectFirebase'
 const colletion = "ponto"
 export const SET_PONTOS_DATA = 'SET_PONTOS_DATA'
-
 export const getList = () => async (dispatch, getState) => {
     try {
         let dados = await db.collection(colletion).get()

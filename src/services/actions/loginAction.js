@@ -7,16 +7,16 @@ export const CLEAR_LOGIN_DATA = "CLEAR_LOGIN_DATA"
 export const login = (email, senha, lembreme) => async (dispatch, getState) => {
     try {
 
-        if (!lembreme) {
-            AsyncStorage.removeItem("email")
-            AsyncStorage.removeItem("senha")
-        }
+        // if (!lembreme) {
+        //     AsyncStorage.removeItem("email")
+        //     AsyncStorage.removeItem("senha")
+        // }
         await firebase.auth().signInWithEmailAndPassword(email, senha)
-        console.log("passou do login")
-        if (lembreme) {
-            AsyncStorage.setItem("email", email)
-            AsyncStorage.setItem("senha", senha)
-        }
+    
+        // if (lembreme) {
+        //     AsyncStorage.setItem("email", email)
+        //     AsyncStorage.setItem("senha", senha)
+        // }
         let usuario = {
             email
         }
@@ -26,7 +26,7 @@ export const login = (email, senha, lembreme) => async (dispatch, getState) => {
         })
     }
     catch (error) {
-        console.log(error)
+        throw error.message
     }
 
 }
@@ -43,6 +43,6 @@ export const saveNewUsers = (email, senha) => async (dispatch, getState) => {
     try {
         await firebase.auth().createUserWithEmailAndPassword(email, senha)
     } catch (error) {
-        console.log(error)
+        throw error.message
     }
 }

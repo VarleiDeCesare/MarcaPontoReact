@@ -1,48 +1,37 @@
 import React, { useState, useLayoutEffect} from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
-import Input from '../components/Input'
-import * as PontoService from '../services/PontoService'
+import { StyleSheet, Text, View, Image, Button } from 'react-native'
+import * as PontoAction from '../services/actions/pontoAction'
+import * as LocationAction from '../services/actions/locationAction'
+import { useSelector, useDispatch } from 'react-redux'
+import moment from 'moment';
 
 export default function CadastroPonto(props) {
-
+    const dispatch = useDispatch()
     const { navigation } = props
+
+    const [msg, setMsg] = useState("")
     
-    const [dia, setDia] = useState("")
-    const [mes, setMes] = useState("")
-    const [ano, setAno] = useState("")
-    const [hora, sethora] = useState("")
-    const [minuto, setMinuto] = useState("")
+    const getCurrentDate= async ()=>{
+        var agora = moment();
+        var agora = agora.format("DD/MM/YYYY HH:mm");
+        
+        let ponto ={ agora }
+        
+        try {
+            await dispatch(PontoAction.save(ponto))
+            navigation.replace("Cadastrado")
 
-    const getCurrentDate=()=>{
-        var day = new Date().getDate();
-        var mounth = new Date().getMonth() + 1;
-        var year = new Date().getFullYear();
-        var hour = new Date().getHours(); 
-        var minute = new Date().getMinutes(); 
-        setDia(day)
-        setMes(mounth)
-        setAno(year)
-        sethora(hour)
-        setMinuto(minute)        
+        } catch (error) {
+            setMsg(error)
+        }
     }
-
         useLayoutEffect(() => {
             getCurrentDate()
         }, [])
-
+        
     return (
         <View style={styles.tela}>
-            <View style={styles.recebido}>
-                <Text style={styles.text}>Horario Marcado no Banco de Horas!</Text>
-            </View>
-            <View style={styles.image}>
-                
-                <Image
-                    style={styles.tinyLogo}
-                    source={require('../../assets/und.svg')}
-                    style={{width: 360, height: 255}}
-                />
-            </View>
+            
         </View>
     )
 }
@@ -62,8 +51,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center"
-    }
-
-
-
+    },
 })

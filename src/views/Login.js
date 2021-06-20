@@ -1,20 +1,22 @@
 import React, { useState, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, Button, CheckBox, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Button, CheckBox, TouchableOpacity, Image } from 'react-native'
 import Input from '../components/Input'
-import * as LoginService from '../services/LoginService'
 import { AsyncStorage } from "react-native"
+import * as LoginAction from '../services/actions/loginAction'
+import { useDispatch } from 'react-redux'
 
 export default function Login(props) {
 
     const { navigation } = props
+    const dispatch = useDispatch()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [lembreme, setLembreme] = useState(false);
     const [msg, setMsg] = useState("")
 
-    /*useLayoutEffect(() => {
+     useLayoutEffect(() => {
 
-        const getUsernameAndPassord = async () => {
+         const getUsernameAndPassord = async () => {
             let email = await AsyncStorage.getItem("email")
             let senha = await AsyncStorage.getItem("senha")
             if (email) {
@@ -25,22 +27,25 @@ export default function Login(props) {
         }
         getUsernameAndPassord()
 
-    }, [])*/
+    },  [])
 
-    const validarCredenciais = () => {
-
-        LoginService.login(email, password, lembreme)
-            .then(() => {
-                navigation.replace("Menu")
-            }).catch(erro => {
-                setMsg(erro)
-            })
+    const validarCredenciais = async () => {
+        try {
+            await dispatch(LoginAction.login(email, password, lembreme))
+            navigation.replace("Menu")
+        } catch (error) {
+            setMsg(error)
+        }
     }
 
     return (
         <View style={styles.container}>
-            <Text>Informe suas Credenciaiss</Text>
+            <Image
+                    source={require('../../assets/login.png')}
+                    style={styles.foto} 
+                />
             <View>
+                <Text>Login</Text>
                 <Text style={{ color: "red", margin: 10 }}>{msg}</Text>
             </View>
             <Input
@@ -71,16 +76,14 @@ export default function Login(props) {
                     onPress={validarCredenciais}
                 />
             </View>
-            <View style={{ marginTop: 5 }}>
+            <View style={{ marginTop: 20 }}>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={()=> navigation.navigate("Registro")}
+                    onPress={() => navigation.navigate("Registro")}
                 >
                     <Text>Não possui Cadastro? Clique aqui.</Text>
                 </TouchableOpacity>
             </View>
-
-
         </View>
     )
 }
@@ -88,7 +91,7 @@ export default function Login(props) {
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        paddingTop: "50%"
+        paddingTop: 30
     },
     caixaBotao: {
         marginTop: 10,
@@ -106,4 +109,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#DDDDDD",
         padding: 10
     },
+    foto:{
+        marginLeft: 60,
+        marginBottom: 10
+    }
 })
